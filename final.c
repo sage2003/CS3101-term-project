@@ -34,6 +34,8 @@ struct Database {
         struct Admin *admins[MAX_ADMINS];
     };
     int count;
+    struct Booking *bookedTickets;  // Dynamic array to store booked tickets
+    int bookedTicketsCount;  // Number of booked tickets
 };
 
 // Updated struct Flight definition
@@ -54,6 +56,8 @@ struct Flight {
 struct Booking {
     struct User user;
     struct Flight flight;
+    int flightIndex;
+    int passengerType;
 };
 
 // Function prototypes for admin utilities
@@ -70,6 +74,7 @@ void freePerson(struct Person *person);
 void freeDatabase(struct Database *db);
 void saveDataToFile(struct Database *db, const char *filename);
 void loadDataFromFile(struct Database *db, const char *filename);
+void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlights);
 
 int main() {
     struct Database db = { .count = 0 };
@@ -88,7 +93,8 @@ int main() {
         printf("1. Sign Up\n");
         printf("2. Book Tickets\n");
         printf("3. Admin Utilities\n");
-        printf("4. Exit\n");
+        printf("4. View Booked Tickets\n");  // New option
+        printf("5. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -103,12 +109,15 @@ int main() {
                 adminUtilities(&db, flights, &numFlights);
                 break;
             case 4:
+                viewBookedTickets(&db, flights, numFlights);
+                break;
+            case 5:
                 printf("Exiting the program.\n");
                 break;
             default:
                 printf("Invalid choice. Please try again.\n");
         }
-    } while (choice != 4);
+    } while (choice != 5);
 
     // Save user data to file before exiting
     saveDataToFile(&db, FILENAME_USER);
@@ -163,7 +172,7 @@ void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
     printf("\nAvailable Flights:\n");
     int availableFlights = 0; // Keep track of available flights
     // printf("numFlights value = %d",numFlights);
-for (int i = 0; i < numFlights; ++i) {
+    for (int i = 0; i < numFlights; ++i) {
     if (strcmp(flights[i].source, source) == 0 &&
         strcmp(flights[i].destination, destination) == 0) {
         printf("%d. Flight Number: %s\n", i+1, flights[i].flightNumber);
@@ -171,6 +180,7 @@ for (int i = 0; i < numFlights; ++i) {
         printf("   Destination: %s\n", flights[i].destination);
         printf("   Departure Date: %s\n", flights[i].departureDate);
         printf("   Departure Time: %s\n", flights[i].departureTime);
+        printf("   Arrival Date: %s\n", flights[i].arrivalDate);
         printf("   Arrival Time: %s\n", flights[i].arrivalTime);
         printf("   Ticket Price for Infant: %.2f\n", flights[i].ticketPriceInfant);
         printf("   Ticket Price for Child: %.2f\n", flights[i].ticketPriceChild);
@@ -264,8 +274,22 @@ if (availableFlights == 0) {
 
     // Store booking details in an array of structures
     struct Booking booking;
-    booking.user = *db->users[userIndex];
+    booking.user = *db->users[userIndex];  // Assume userIndex is the index of the logged-in user
     booking.flight = flights[selectedFlight - 1];
+    booking.passengerType = passengerType; 
+
+    // Increase the size of the bookedTickets array
+    db->bookedTicketsCount++;
+    db->bookedTickets = realloc(db->bookedTickets, db->bookedTicketsCount * sizeof(struct Booking));
+
+// Check if the reallocation was successful
+if (db->bookedTickets == NULL) {
+    printf("Memory allocation failed. Exiting.\n");
+    exit(EXIT_FAILURE);
+}
+
+// Add the new booking
+db->bookedTickets[db->bookedTicketsCount - 1] = booking;
 
     // Display booking details
     printf("\nBooking Details:\n");
@@ -294,6 +318,136 @@ if (availableFlights == 0) {
     printf("Press any key to return to the main interface...\n");
     getchar();  // Consume the newline character from the previous input
     getchar();  // Wait for a key press
+}
+
+void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlights) {
+    printf("\n<-------- View Booked Tickets -------->\n");
+
+    int userType;
+    printf("Are you a user or an admin?\n");
+    printf("1. User\n");
+    printf("2. Admin\n");
+    printf("Enter your choice: ");
+    scanf("%d", &userType);
+
+    if (userType == 1) {
+        // User login to view booked tickets
+        char inputUsername[20];
+        char inputPassword[20];
+
+        printf("Enter your username: ");
+        scanf("%s", inputUsername);
+
+        printf("Enter your password: ");
+        scanf("%s", inputPassword);
+
+        int userIndex = -1;
+        for (int i = 0; i < db->count; ++i) {
+            if (strcmp(db->users[i]->person.username, inputUsername) == 0 &&
+                strcmp(db->users[i]->person.password, inputPassword) == 0) {
+                userIndex = i;
+                break;
+            }
+        }
+
+        if (userIndex == -1) {
+            printf("Login failed. Invalid username or password.\n");
+            return;
+        }
+
+        // Display booked tickets for the logged-in user
+        printf("Booked Tickets for User: %s\n", db->users[userIndex]->person.username);
+
+        // Check if the user has booked any tickets
+        if (db->bookedTickets[userIndex].user.person.username != NULL) {
+            printf("Booked Ticket Details:\n");
+            printf("Passenger Type: ");
+        switch (db->bookedTickets[userIndex].passengerType) {
+            case 1:
+                printf("Infant\n");
+                break;
+            case 2:
+                printf("Child\n");
+                break;
+            case 3:
+                printf("Adult\n");
+                break;
+            default:
+                printf("Unknown\n");
+        }
+            printf("Flight Number: %s\n", db->bookedTickets[userIndex].flight.flightNumber);
+            printf("Source: %s\n", db->bookedTickets[userIndex].flight.source);
+            printf("Destination: %s\n", db->bookedTickets[userIndex].flight.destination);
+            printf("Departure Date: %s\n", db->bookedTickets[userIndex].flight.departureDate);
+            printf("Departure Time: %s\n", db->bookedTickets[userIndex].flight.departureTime);
+            printf("Arrival Date: %s\n", db->bookedTickets[userIndex].flight.arrivalDate);
+            printf("Arrival Time: %s\n", db->bookedTickets[userIndex].flight.arrivalTime);
+        } else {
+            printf("No booked tickets found for this user.\n");
+        }
+    } else if (userType == 2) {
+        // Admin login to view all booked tickets
+        char inputUsername[20];
+        char inputPassword[20];
+        char inputEmployeeID[20];
+
+        printf("Enter your username: ");
+        scanf("%s", inputUsername);
+
+        printf("Enter your password: ");
+        scanf("%s", inputPassword);
+
+        printf("Enter your employee ID: ");
+        scanf("%s", inputEmployeeID);
+
+        int adminIndex = -1;
+        for (int i = 0; i < db->count; ++i) {
+            if (strcmp(db->admins[i]->person.username, inputUsername) == 0 &&
+                strcmp(db->admins[i]->person.password, inputPassword) == 0 &&
+                strcmp(db->admins[i]->employeeID, inputEmployeeID) == 0) {
+                adminIndex = i;
+                break;
+            }
+        }
+
+        if (adminIndex == -1) {
+            printf("Login failed. Invalid username, password, or employee ID.\n");
+            return;
+        }
+
+        // Display all booked tickets for the admin
+        printf("Booked Tickets for Admin: %s\n", db->admins[adminIndex]->person.username);
+
+        for (int i = 0; i < db->count; ++i) {
+            if (db->bookedTickets[i].user.person.username != NULL) {
+                printf("User: %s\n", db->bookedTickets[i].user.person.username);
+                printf("Booked Ticket Details:\n");
+                printf("Passenger Type: ");
+        switch (db->bookedTickets[i].passengerType) {
+            case 1:
+                printf("Infant\n");
+                break;
+            case 2:
+                printf("Child\n");
+                break;
+            case 3:
+                printf("Adult\n");
+                break;
+            default:
+                printf("Unknown\n");
+        }
+                printf("Flight Number: %s\n", db->bookedTickets[i].flight.flightNumber);
+                printf("Source: %s\n", db->bookedTickets[i].flight.source);
+                printf("Destination: %s\n", db->bookedTickets[i].flight.destination);
+                printf("Departure Date: %s\n", db->bookedTickets[i].flight.departureDate);
+                printf("Departure Time: %s\n", db->bookedTickets[i].flight.departureTime);
+                printf("Arrival Date: %s\n", db->bookedTickets[i].flight.arrivalDate);
+                printf("Arrival Time: %s\n", db->bookedTickets[i].flight.arrivalTime);
+            }
+        }
+    } else {
+        printf("Invalid choice. Please try again.\n");
+    }
 }
 
 
@@ -623,19 +777,20 @@ void saveDataToFile(struct Database *db, const char *filename) {
 
     for (int i = 0; i < db->count; ++i) {
         if (i < MAX_USERS) {
-            fprintf(file, "%s|%s|%s|%s|%s\n",
+            fprintf(file, "%s|%s|%s|%s|%s|%d\n",
                     db->users[i]->person.name, db->users[i]->person.phone, db->users[i]->person.email,
-                    db->users[i]->person.username, db->users[i]->person.password);
+                    db->users[i]->person.username, db->users[i]->person.password, 1);
         } else {
-            fprintf(file, "%s|%s|%s|%s|%s|%s\n",
+            fprintf(file, "%s|%s|%s|%s|%s|%s|%d\n",
                     db->admins[i - MAX_USERS]->person.name, db->admins[i - MAX_USERS]->person.phone,
                     db->admins[i - MAX_USERS]->person.email, db->admins[i - MAX_USERS]->person.username,
-                    db->admins[i - MAX_USERS]->person.password, db->admins[i - MAX_USERS]->employeeID);
+                    db->admins[i - MAX_USERS]->person.password, db->admins[i - MAX_USERS]->employeeID, 2);
         }
     }
 
     fclose(file);
 }
+
 
 // Function to load user or admin data from a file
 void loadDataFromFile(struct Database *db, const char *filename) {
@@ -648,43 +803,39 @@ void loadDataFromFile(struct Database *db, const char *filename) {
     char name[50], phone[15], email[50], username[20], password[20], employeeID[20];
     int userType;
 
-    while (fscanf(file, "%49[^|]|%14[^|]|%49[^|]|%19[^|]|%19[^|]|%19[^\n]", name, phone, email, username, password, employeeID) != EOF) {
+    while (fscanf(file, "%49[^|]|%14[^|]|%49[^|]|%19[^|]|%19[^|]|%19[^|]|%d", name, phone, email, username, password, employeeID, &userType) != EOF) {
         if (db->count < MAX_USERS + MAX_ADMINS) {
-            if (fscanf(file, "%d", &userType) == 1) {
-                if (userType == 1) {
-                    struct User *loadedUser = (struct User *)malloc(sizeof(struct User));
-                    if (!loadedUser) {
-                        printf("Memory allocation error while loading user data.\n");
-                        exit(EXIT_FAILURE);
-                    }
-
-                    loadedUser->person.name = strdup(name);
-                    loadedUser->person.phone = strdup(phone);
-                    loadedUser->person.email = strdup(email);
-                    loadedUser->person.username = strdup(username);
-                    loadedUser->person.password = strdup(password);
-
-                    db->users[db->count++] = loadedUser;
-                } else if (userType == 2) {
-                    struct Admin *loadedAdmin = (struct Admin *)malloc(sizeof(struct Admin));
-                    if (!loadedAdmin) {
-                        printf("Memory allocation error while loading admin data.\n");
-                        exit(EXIT_FAILURE);
-                    }
-
-                    loadedAdmin->person.name = strdup(name);
-                    loadedAdmin->person.phone = strdup(phone);
-                    loadedAdmin->person.email = strdup(email);
-                    loadedAdmin->person.username = strdup(username);
-                    loadedAdmin->person.password = strdup(password);
-                    loadedAdmin->employeeID = strdup(employeeID);
-
-                    db->admins[db->count++ - MAX_USERS] = loadedAdmin;
-                } else {
-                    printf("Invalid user type in file %s.\n", filename);
+            if (userType == 1) {
+                struct User *loadedUser = (struct User *)malloc(sizeof(struct User));
+                if (!loadedUser) {
+                    printf("Memory allocation error while loading user data.\n");
+                    exit(EXIT_FAILURE);
                 }
+
+                loadedUser->person.name = strdup(name);
+                loadedUser->person.phone = strdup(phone);
+                loadedUser->person.email = strdup(email);
+                loadedUser->person.username = strdup(username);
+                loadedUser->person.password = strdup(password);
+
+                db->users[db->count++] = loadedUser;
+            } else if (userType == 2) {
+                struct Admin *loadedAdmin = (struct Admin *)malloc(sizeof(struct Admin));
+                if (!loadedAdmin) {
+                    printf("Memory allocation error while loading admin data.\n");
+                    exit(EXIT_FAILURE);
+                }
+
+                loadedAdmin->person.name = strdup(name);
+                loadedAdmin->person.phone = strdup(phone);
+                loadedAdmin->person.email = strdup(email);
+                loadedAdmin->person.username = strdup(username);
+                loadedAdmin->person.password = strdup(password);
+                loadedAdmin->employeeID = strdup(employeeID);
+
+                db->admins[db->count++ - MAX_USERS] = loadedAdmin;
             } else {
-                printf("Error reading user type from file %s.\n", filename);
+                printf("Invalid user type in file %s.\n", filename);
             }
         } else {
             printf("Database is full. Some data may not be loaded.\n");
@@ -694,6 +845,7 @@ void loadDataFromFile(struct Database *db, const char *filename) {
 
     fclose(file);
 }
+
 
 // Function to display details
 void displayDetails(const struct Person *person) {
