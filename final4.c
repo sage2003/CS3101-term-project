@@ -82,9 +82,9 @@ int main() {
     int numFlights = 0;
 
     // Load user data from file
-    loadDataFromFile(&db, FILENAME_USER);
+    //loadDataFromFile(&db, FILENAME_USER);
     // Load admin data from file
-    loadDataFromFile(&db, FILENAME_ADMIN);
+    //loadDataFromFile(&db, FILENAME_ADMIN);
 
     int choice;
 
@@ -120,9 +120,9 @@ int main() {
     } while (choice != 5);
 
     // Save user data to file before exiting
-    saveDataToFile(&db, FILENAME_USER);
+    //saveDataToFile(&db, FILENAME_USER);
     // Save admin data to file before exiting
-    saveDataToFile(&db, FILENAME_ADMIN);
+    //saveDataToFile(&db, FILENAME_ADMIN);
 
     freeDatabase(&db);
     return 0;
@@ -134,6 +134,7 @@ void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
         printf("No registered users found. Please sign up before booking tickets.\n");
         return;
     }
+
 
     char inputUsername[20];
     char inputPassword[20];
@@ -273,6 +274,12 @@ if (availableFlights == 0) {
     printf("\nTicket booked successfully!\n");
 
     // Store booking details in an array of structures
+    //     struct Booking {
+//     struct User user;
+//     struct Flight flight;
+//     int flightIndex;
+//     int passengerType;
+// };
     struct Booking booking;
     booking.user = *db->users[userIndex];  // Assume userIndex is the index of the logged-in user
     booking.flight = flights[selectedFlight - 1];
@@ -290,7 +297,7 @@ if (db->bookedTickets == NULL) {
 
 // Add the new booking
 db->bookedTickets[db->bookedTicketsCount - 1] = booking;
-
+    //printf("The flight index = "+(db->bookedTickets[db->bookedTicketsCount - 1]).flightIndex);
     // Display booking details
     printf("\nBooking Details:\n");
     printf("Passenger Name: %s\n", booking.user.person.name);
@@ -359,10 +366,16 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
         printf("Booked Tickets for User: %s\n", db->users[userIndex]->person.username);
 
         // Check if the user has booked any tickets
-        if (db->bookedTickets[userIndex].user.person.username != NULL) {
+
+        int cnt=0;
+       
+        for (int i=0;i<db->bookedTicketsCount;i++) {
+    
+            if(strcmp((db->bookedTickets[i].user.person.username),inputUsername)!=0) continue;
+            cnt++;
             printf("Booked Ticket Details:\n");
             printf("Passenger Type: ");
-        switch (db->bookedTickets[userIndex].passengerType) {
+        switch (db->bookedTickets[i].passengerType) {
             case 1:
                 printf("Infant\n");
                 break;
@@ -375,18 +388,19 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
             default:
                 printf("Unknown\n");
         }
-            printf("Flight Number: %s\n", db->bookedTickets[userIndex].flight.flightNumber);
-            printf("Source: %s\n", db->bookedTickets[userIndex].flight.source);
-            printf("Destination: %s\n", db->bookedTickets[userIndex].flight.destination);
-            printf("Departure Date: %s\n", db->bookedTickets[userIndex].flight.departureDate);
-            printf("Departure Time: %s\n", db->bookedTickets[userIndex].flight.departureTime);
-            printf("Arrival Date: %s\n", db->bookedTickets[userIndex].flight.arrivalDate);
-            printf("Arrival Time: %s\n", db->bookedTickets[userIndex].flight.arrivalTime);
-        } else {
+            printf("Flight Number: %s\n", db->bookedTickets[i].flight.flightNumber);
+            printf("Source: %s\n", db->bookedTickets[i].flight.source);
+            printf("Destination: %s\n", db->bookedTickets[i].flight.destination);
+            printf("Departure Date: %s\n", db->bookedTickets[i].flight.departureDate);
+            printf("Departure Time: %s\n", db->bookedTickets[i].flight.departureTime);
+            printf("Arrival Date: %s\n", db->bookedTickets[i].flight.arrivalDate);
+            printf("Arrival Time: %s\n", db->bookedTickets[i].flight.arrivalTime);
+        } if(cnt==0) {
             printf("No booked tickets found for this user.\n");
         }
     } else if (userType == 2) {
         // Admin login to view all booked tickets
+        printf("Admin mein hu");
         char inputUsername[20];
         char inputPassword[20];
         char inputEmployeeID[20];
@@ -416,7 +430,7 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
         }
 
         // Display all booked tickets for the admin
-        printf("Booked Tickets for Admin: %s\n", db->admins[adminIndex]->person.username);
+        printf("Displaying all booked Tickets for Admin: %s\n", db->admins[adminIndex]->person.username);
 
         for (int i = 0; i < db->count; ++i) {
             if (db->bookedTickets[i].user.person.username != NULL) {
@@ -767,9 +781,9 @@ void freeDatabase(struct Database *db) {
     }
 }
 
-// Function to save user or admin data to a file
-void saveDataToFile(struct Database *db, const char *filename) {
-    FILE *file = fopen(filename, "w");
+// Function to save user or admin data to a file (not working)
+/*void saveDataToFile(struct Database *db, const char *filename) {
+    FILE *file = fopen(filename, "a+");
     if (file == NULL) {
         printf("Error opening file for writing.\n");
         exit(EXIT_FAILURE);
@@ -789,11 +803,11 @@ void saveDataToFile(struct Database *db, const char *filename) {
     }
 
     fclose(file);
-}
+}*/
 
 
-// Function to load user or admin data from a file
-void loadDataFromFile(struct Database *db, const char *filename) {
+// Function to load user or admin data from a file (not working)
+/*void loadDataFromFile(struct Database *db, const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         printf("No existing data file found for %s.\n", filename);
@@ -844,7 +858,7 @@ void loadDataFromFile(struct Database *db, const char *filename) {
     }
 
     fclose(file);
-}
+}*/
 
 
 // Function to display details
