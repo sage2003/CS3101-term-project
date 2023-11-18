@@ -89,7 +89,7 @@ int main() {
     int choice;
 
     do {
-        printf("\n<-------- Welcome aboard Stay High flight ticket reservation system -------->\n");
+        printf("\n<-------- Sky High Flight Ticket Reservation System -------->\n");
         printf("1. Sign Up\n");
         printf("2. Book Tickets\n");
         printf("3. Admin Utilities\n");
@@ -367,8 +367,7 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
 
         // Check if the user has booked any tickets
 
-        int cnt=0;
-       
+        int cnt=0; 
         for (int i=0;i<db->bookedTicketsCount;i++) {
     
             if(strcmp((db->bookedTickets[i].user.person.username),inputUsername)!=0) continue;
@@ -400,7 +399,6 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
         }
     } else if (userType == 2) {
         // Admin login to view all booked tickets
-        printf("Admin mein hu");
         char inputUsername[20];
         char inputPassword[20];
         char inputEmployeeID[20];
