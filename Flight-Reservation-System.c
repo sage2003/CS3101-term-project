@@ -9,8 +9,8 @@
 #define MAX_USERS 100
 #define MAX_ADMINS 100
 #define MAX_FLIGHTS 50
-#define FILENAME_USER "userdata.txt"
-#define FILENAME_ADMIN "admindata.txt"
+//#define FILENAME_USER "userdata.txt"
+//#define FILENAME_ADMIN "admindata.txt"
 
 //Defining structures to be used later in the code
 struct Person {
