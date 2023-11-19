@@ -4,13 +4,15 @@
 #include <stdbool.h>
 #include <unistd.h>
 
+
+// Defining global variables
 #define MAX_USERS 100
 #define MAX_ADMINS 100
 #define MAX_FLIGHTS 50
 #define FILENAME_USER "userdata.txt"
 #define FILENAME_ADMIN "admindata.txt"
 
-
+//Defining structures to be used later in the code
 struct Person {
     char *name;
     char *phone;
@@ -32,19 +34,18 @@ struct Database {
     union {
         struct User *users[MAX_USERS];
         struct Admin *admins[MAX_ADMINS];
-    };
+    }; // All the members in the union are stored in the same memory location. Due to this, only one member can store data at the given instance.
     int count;
     struct Booking *bookedTickets;  // Dynamic array to store booked tickets
     int bookedTicketsCount;  // Number of booked tickets
 };
 
-// Updated struct Flight definition
 struct Flight {
     char flightNumber[10];
     char departureTime[20];
     char arrivalTime[20];
-    char departureDate[20];  // New: Departure date
-    char arrivalDate[20];    // New: Arrival date
+    char departureDate[20];
+    char arrivalDate[20]; 
     float ticketPriceInfant;
     float ticketPriceChild;
     float ticketPriceAdult;
@@ -65,7 +66,7 @@ void enterFlightDetails(struct Flight flights[], int *numFlights);
 void editFlightDetails(struct Flight flights[], int numFlights);
 void viewAllFlightDetails(struct Flight flights[], int numFlights);
 
-// Function prototypes
+// Other Function prototypes
 void signUp(struct Database *db);
 void bookTickets(struct Database *db, struct Flight flights[], int numFlights);
 void adminUtilities(struct Database *db, struct Flight flights[], int *numFlights);
@@ -76,26 +77,33 @@ void saveDataToFile(struct Database *db, const char *filename);
 void loadDataFromFile(struct Database *db, const char *filename);
 void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlights);
 
+// Driver Code
 int main() {
     struct Database db = { .count = 0 };
     struct Flight flights[MAX_FLIGHTS];
     int numFlights = 0;
 
-    // Load user data from file
+    // Load user data from file (not working)
     //loadDataFromFile(&db, FILENAME_USER);
-    // Load admin data from file
+    // Load admin data from file (not working)
     //loadDataFromFile(&db, FILENAME_ADMIN);
 
     int choice;
 
     do {
-        printf("\n\n\t\t ********************************************************************\n");
-        printf("\n\n\t\t <----------- Sky High Flight Ticket Reservation System ------------>\n");
-        printf("\n\n\t\t ********************************************************************\n");
+        printf("\n\n\t\t ************************************************************************\n");
+        printf("\t\t ||                                                                    ||\n");
+        printf("\t\t ||<----------- Sky High Flight Ticket Reservation System ------------>||\n");
+        printf("\t\t ||                                                                    ||\n");
+        printf("\t\t ||♥------------------ Made by Priyanshu and Soham -------------------♥||\n");
+        printf("\t\t ||                                                                    ||\n");
+        printf("\t\t ||☠︎︎------------------------ Team CodeBhairav ------------------------☠︎︎||\n");
+        printf("\t\t ||                                                                    ||\n");
+        printf("\t\t ************************************************************************\n");
         printf("\n\t\t 1. Sign Up\n");
         printf("\n\t\t 2. Admin Utilities\n");
         printf("\n\t\t 3. Book Tickets\n");
-        printf("\n\t\t 4. View Booked Tickets\n");  // New option
+        printf("\n\t\t 4. View Booked Tickets\n");
         printf("\n\t\t 5. Exit\n");
         printf("\n\t\t Enter your choice: ");
         scanf("%d", &choice);
@@ -109,7 +117,7 @@ int main() {
                 printf("\n\t\t ___________________________________________ \n");
                 getchar();  // Consume the newline character from the previous input
                 getchar();  // Wait for a key press
-                system("clear");
+                system("clear"); // Clears the terminal before exiting the switch case
                 break;
             case 2:
                 adminUtilities(&db, flights, &numFlights);
@@ -118,11 +126,11 @@ int main() {
                 printf("\n\t\t ___________________________________________ \n");
                 getchar();  // Consume the newline character from the previous input
                 getchar();  // Wait for a key press
-                system("clear");
+                system("clear"); // Clears the terminal before exiting the switch case
                 break;
             case 3:
                 bookTickets(&db, flights, numFlights);
-                system("clear");
+                system("clear"); // Clears the terminal before exiting the switch case
                 break;
             case 4:
                 viewBookedTickets(&db, flights, numFlights);
@@ -131,11 +139,11 @@ int main() {
                 printf("\n\t\t ___________________________________________ \n");
                 getchar();  // Consume the newline character from the previous input
                 getchar();  // Wait for a key press
-                system("clear");
+                system("clear"); // Clears the terminal before exiting the switch case
                 break;
             case 5:
                 system("clear");
-                printf("\n\t\t Exiting the program.\n");
+                printf("\t\t Exiting the program.\n");
                 // Simulate a delay for a more realistic experience
                 usleep(4000000);
                 break;
@@ -144,9 +152,9 @@ int main() {
         }
     } while (choice != 5);
 
-    // Save user data to file before exiting
+    // Save user data to file before exiting (working erroneously)
     //saveDataToFile(&db, FILENAME_USER);
-    // Save admin data to file before exiting
+    // Save admin data to file before exiting (working erroneously)
     //saveDataToFile(&db, FILENAME_ADMIN);
 
     freeDatabase(&db);
@@ -154,9 +162,15 @@ int main() {
 }
 
 
+// Function for users to book tickets
 void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
     if (db->count == 0) {
         printf("\n\t\t No registered users found. Please sign up before booking tickets.\n");
+        // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
         return;
     }
 
@@ -182,6 +196,11 @@ void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
 
     if (userIndex == -1) {
         printf("\n\t\t Login failed. Invalid username or password.\n");
+        // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
         return;
     }
 
@@ -197,10 +216,12 @@ void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
     // Display available flights based on the entered information
     printf("\n\t\t Available Flights:\n");
     int availableFlights = 0; // Keep track of available flights
+
     // printf("numFlights value = %d",numFlights);
     for (int i = 0; i < numFlights; ++i) {
     if (strcmp(flights[i].source, source) == 0 &&
-        strcmp(flights[i].destination, destination) == 0) {
+        strcmp(flights[i].destination, destination) == 0) { 
+        // Display available flight details
         printf("\n\t\t %d. Flight Number: %s\n", i+1, flights[i].flightNumber);
         printf("\n\t\t    Source: %s\n", flights[i].source);
         printf("\n\t\t    Destination: %s\n", flights[i].destination);
@@ -219,6 +240,11 @@ void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
 
 if (availableFlights == 0) {
     printf("\n\t\t Sorry, no flights available for the specified route. Please try again later.\n");
+                // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
     return;
 }
 
@@ -249,10 +275,15 @@ if (availableFlights == 0) {
     // Check for seat availability
     if (flights[selectedFlight - 1].seatsAvailable <= 0) {
         printf("\n\t\t Sorry, no seats available for the selected flight. Please try again later.\n");
+        // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
         return;
     }
 
-    // Ask the user to select passenger type
+    // Ask the user to select passenger type (Infant, Child or Adult)
     int passengerType;
     do {
         printf("\n\t\t Select Passenger Type:\n");
@@ -298,36 +329,36 @@ if (availableFlights == 0) {
     // Display booking confirmation and details
     printf("\n\t\t Ticket booked successfully!\n");
 
-    // Store booking details in an array of structures
+    // Store booking details in an array of structures (not required anymore)
     //     struct Booking {
-//     struct User user;
-//     struct Flight flight;
-//     int flightIndex;
-//     int passengerType;
-// };
-    struct Booking booking;
+    //     struct User user;
+    //     struct Flight flight;
+    //     int flightIndex;
+    //     int passengerType;
+    // };
+    struct Booking booking; // New definition
     booking.user = *db->users[userIndex];  // Assume userIndex is the index of the logged-in user
     booking.flight = flights[selectedFlight - 1];
     booking.passengerType = passengerType; 
 
     // Increase the size of the bookedTickets array
     db->bookedTicketsCount++;
-    db->bookedTickets = realloc(db->bookedTickets, db->bookedTicketsCount * sizeof(struct Booking));
+    db->bookedTickets = realloc(db->bookedTickets, db->bookedTicketsCount * sizeof(struct Booking)); // Dynamic reallocation
 
-// Check if the reallocation was successful
-if (db->bookedTickets == NULL) {
-    printf("\n\t\t Memory allocation failed. Exiting.\n");
-    exit(EXIT_FAILURE);
-}
+    // Check if the reallocation was successful
+    if (db->bookedTickets == NULL) {
+        printf("\n\t\t Memory allocation failed. Exiting.\n");
+        exit(EXIT_FAILURE);
+    }
 
-// Add the new booking
-db->bookedTickets[db->bookedTicketsCount - 1] = booking;
-    //printf("The flight index = "+(db->bookedTickets[db->bookedTicketsCount - 1]).flightIndex);
+    // Add the new booking
+    db->bookedTickets[db->bookedTicketsCount - 1] = booking;
+    //printf("The flight index = "+(db->bookedTickets[db->bookedTicketsCount - 1]).flightIndex); //(check)
     // Display booking details
     printf("\n\t\t ___________________________________________ \n");
     printf("\n\n\t\t Booking Details:\n");
     printf("\t\t Passenger Name: %s\n", booking.user.person.name);
-
+    // Verify passenger type
     if (passengerType==1){
         printf("\t\t Passenger Type: I\n");
     }
@@ -354,9 +385,11 @@ db->bookedTickets[db->bookedTicketsCount - 1] = booking;
     getchar();  // Wait for a key press
 }
 
+// Function for admins and users to view booked tickets
 void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlights) {
     printf("\n\t\t <-------- View Booked Tickets -------->\n");
 
+    // Check user type
     int userType;
     printf("\n\t\t Are you a user or an admin?\n");
     printf("\t\t 1. User\n");
@@ -388,6 +421,11 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
 
         if (userIndex == -1) {
             printf("\n\t\t Login failed. Invalid username or password.\n");
+            // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
             return;
         }
 
@@ -456,6 +494,11 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
 
         if (adminIndex == -1) {
             printf("\n\t\t Login failed. Invalid username, password, or employee ID.\n");
+            // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
             return;
         }
 
@@ -498,13 +541,14 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
     }
 }
 
-
+// Function for accessing admin utilities
 void adminUtilities(struct Database *db, struct Flight flights[], int *numFlights) {
     if (db->count > 0) {
         char inputUsername[20];
         char inputPassword[20];
         char inputEmployeeID[20];
 
+        // Authenticate admin
         printf("\n\t\t Enter your username: ");
         scanf("%s", inputUsername);
 
@@ -526,7 +570,7 @@ void adminUtilities(struct Database *db, struct Flight flights[], int *numFlight
 
         if (adminIndex != -1) {
             int adminChoice;
-            do {
+            do { // Display all admin utilities
                 printf("\n\t\t Admin Utilities\n");
                 printf("\n\t\t 1. Enter Flight Details\n");
                 printf("\n\t\t 2. Edit Flight Details\n");
@@ -566,9 +610,14 @@ void adminUtilities(struct Database *db, struct Flight flights[], int *numFlight
 void signUp(struct Database *db) {
     if (db->count == MAX_USERS + MAX_ADMINS) {
         printf("\n\t\t Database is full. Cannot sign up new users or admins.\n");
+        // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
         return;
     }
-
+    // Verfiy user type
     int userType;
     printf("\n\t\t Choose user type:\n");
     printf("\n\t\t 1. User\n");
@@ -579,12 +628,18 @@ void signUp(struct Database *db) {
 
     if (userType != 1 && userType != 2) {
         printf("Invalid choice. Please try again.\n");
+        // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
         return;
     }
 
     char inputUsername[20];
     char inputPassword[20];
 
+    // Take user details as input
     printf("\n\t\t Enter your desired username: ");
     scanf(" %19[^\n]", inputUsername);
 
@@ -593,6 +648,11 @@ void signUp(struct Database *db) {
         if ((userType == 1 && strcmp(db->users[i]->person.username, inputUsername) == 0) ||
             (userType == 2 && strcmp(db->admins[i]->person.username, inputUsername) == 0)) {
             printf("Username already exists. Please try again with a different username.\n");
+            // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
             return;
         }
     }
@@ -605,6 +665,11 @@ void signUp(struct Database *db) {
         if ((userType == 1 && strcmp(db->users[i]->person.password, inputPassword) == 0) ||
             (userType == 2 && strcmp(db->admins[i]->person.password, inputPassword) == 0)) {
             printf("Password already exists. Please try again with a different password.\n");
+            // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
             return;
         }
     }
@@ -643,6 +708,7 @@ void signUp(struct Database *db) {
             exit(EXIT_FAILURE);
         }
 
+        // Take admin details as input
         printf("\n\t\t Enter your name: ");
         newAdmin->person.name = (char *)malloc(50 * sizeof(char));
         scanf(" %49[^\n]", newAdmin->person.name);
@@ -677,6 +743,11 @@ void signUp(struct Database *db) {
 void enterFlightDetails(struct Flight flights[], int *numFlights) {
     if (*numFlights == MAX_FLIGHTS) {
         printf("\n\t\t Maximum number of flights reached. Cannot add more flights.\n");
+        // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
         return;
     }
 
@@ -689,6 +760,11 @@ void enterFlightDetails(struct Flight flights[], int *numFlights) {
     for (int i = 0; i < *numFlights; i++) {
         if (strcmp(flights[i].flightNumber, flights[*numFlights].flightNumber) == 0) {
             printf("\n\t\t Flight with the given number already exists. Cannot add duplicate flights.\n");
+            // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
             return;
         }
     }
@@ -783,6 +859,11 @@ void editFlightDetails(struct Flight flights[], int numFlights) {
 void viewAllFlightDetails(struct Flight flights[], int numFlights) {
     if (numFlights == 0) {
         printf("\n\t\t No flights available.\n");
+        // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
         return;
     }
 
