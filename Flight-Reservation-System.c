@@ -104,17 +104,37 @@ int main() {
         switch (choice) {
             case 1:
                 signUp(&db);
+                // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
+                system("clear");
                 break;
             case 2:
                 adminUtilities(&db, flights, &numFlights);
+                // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
+                system("clear");
                 break;
             case 3:
                 bookTickets(&db, flights, numFlights);
+                system("clear");
                 break;
             case 4:
                 viewBookedTickets(&db, flights, numFlights);
+                // Ask the user to press any button to return to the main interface
+                printf("\n\t\t Press enter key to return to the main interface...\n");
+                printf("\n\t\t ___________________________________________ \n");
+                getchar();  // Consume the newline character from the previous input
+                getchar();  // Wait for a key press
+                system("clear");
                 break;
             case 5:
+                system("clear");
                 printf("\n\t\t Exiting the program.\n");
                 // Simulate a delay for a more realistic experience
                 usleep(4000000);
