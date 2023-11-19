@@ -89,33 +89,38 @@ int main() {
     int choice;
 
     do {
-        printf("\n<-------- Sky High Flight Ticket Reservation System -------->\n");
-        printf("1. Sign Up\n");
-        printf("2. Book Tickets\n");
-        printf("3. Admin Utilities\n");
-        printf("4. View Booked Tickets\n");  // New option
-        printf("5. Exit\n");
-        printf("Enter your choice: ");
+        printf("\n\n\t\t ********************************************************************\n");
+        printf("\n\n\t\t <----------- Sky High Flight Ticket Reservation System ------------>\n");
+        printf("\n\n\t\t ********************************************************************\n");
+        printf("\n\t\t 1. Sign Up\n");
+        printf("\n\t\t 2. Admin Utilities\n");
+        printf("\n\t\t 3. Book Tickets\n");
+        printf("\n\t\t 4. View Booked Tickets\n");  // New option
+        printf("\n\t\t 5. Exit\n");
+        printf("\n\t\t Enter your choice: ");
         scanf("%d", &choice);
+        printf("\t\t ____________________________________________________________________\n");
 
         switch (choice) {
             case 1:
                 signUp(&db);
                 break;
             case 2:
-                bookTickets(&db, flights, numFlights);
+                adminUtilities(&db, flights, &numFlights);
                 break;
             case 3:
-                adminUtilities(&db, flights, &numFlights);
+                bookTickets(&db, flights, numFlights);
                 break;
             case 4:
                 viewBookedTickets(&db, flights, numFlights);
                 break;
             case 5:
-                printf("Exiting the program.\n");
+                printf("\n\t\t Exiting the program.\n");
+                // Simulate a delay for a more realistic experience
+                usleep(4000000);
                 break;
             default:
-                printf("Invalid choice. Please try again.\n");
+                printf("\n\t\t Invalid choice. Please try again.\n");
         }
     } while (choice != 5);
 
@@ -131,7 +136,7 @@ int main() {
 
 void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
     if (db->count == 0) {
-        printf("No registered users found. Please sign up before booking tickets.\n");
+        printf("\n\t\t No registered users found. Please sign up before booking tickets.\n");
         return;
     }
 
@@ -140,10 +145,10 @@ void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
     char inputPassword[20];
 
     // Authenticating the user
-    printf("Enter your username: ");
+    printf("\n\t\t Enter your username: ");
     scanf("%s", inputUsername);
 
-    printf("Enter your password: ");
+    printf("\n\t\t Enter your password: ");
     scanf("%s", inputPassword);
 
     int userIndex = -1;
@@ -156,89 +161,89 @@ void bookTickets(struct Database *db, struct Flight flights[], int numFlights) {
     }
 
     if (userIndex == -1) {
-        printf("Login failed. Invalid username or password.\n");
+        printf("\n\t\t Login failed. Invalid username or password.\n");
         return;
     }
 
     // User authenticated, proceed with ticket booking
-    printf("Enter the source: ");
+    printf("\n\t\t Enter the source: ");
     char source[50];
     scanf("%s", source);
 
-    printf("Enter the destination: ");
+    printf("\n\t\t Enter the destination: ");
     char destination[50];
     scanf("%s", destination);
 
     // Display available flights based on the entered information
-    printf("\nAvailable Flights:\n");
+    printf("\n\t\t Available Flights:\n");
     int availableFlights = 0; // Keep track of available flights
     // printf("numFlights value = %d",numFlights);
     for (int i = 0; i < numFlights; ++i) {
     if (strcmp(flights[i].source, source) == 0 &&
         strcmp(flights[i].destination, destination) == 0) {
-        printf("%d. Flight Number: %s\n", i+1, flights[i].flightNumber);
-        printf("   Source: %s\n", flights[i].source);
-        printf("   Destination: %s\n", flights[i].destination);
-        printf("   Departure Date: %s\n", flights[i].departureDate);
-        printf("   Departure Time: %s\n", flights[i].departureTime);
-        printf("   Arrival Date: %s\n", flights[i].arrivalDate);
-        printf("   Arrival Time: %s\n", flights[i].arrivalTime);
-        printf("   Ticket Price for Infant: %.2f\n", flights[i].ticketPriceInfant);
-        printf("   Ticket Price for Child: %.2f\n", flights[i].ticketPriceChild);
-        printf("   Ticket Price for Adult: %.2f\n", flights[i].ticketPriceAdult);
-        printf("   Seats Available: %d\n", flights[i].seatsAvailable);
-        printf("-------------------------------\n");
+        printf("\n\t\t %d. Flight Number: %s\n", i+1, flights[i].flightNumber);
+        printf("\n\t\t    Source: %s\n", flights[i].source);
+        printf("\n\t\t    Destination: %s\n", flights[i].destination);
+        printf("\n\t\t    Departure Date: %s\n", flights[i].departureDate);
+        printf("\n\t\t    Departure Time: %s\n", flights[i].departureTime);
+        printf("\n\t\t    Arrival Date: %s\n", flights[i].arrivalDate);
+        printf("\n\t\t    Arrival Time: %s\n", flights[i].arrivalTime);
+        printf("\n\t\t    Ticket Price for Infant: %.2f\n", flights[i].ticketPriceInfant);
+        printf("\n\t\t    Ticket Price for Child: %.2f\n", flights[i].ticketPriceChild);
+        printf("\n\t\t    Ticket Price for Adult: %.2f\n", flights[i].ticketPriceAdult);
+        printf("\n\t\t    Seats Available: %d\n", flights[i].seatsAvailable);
+        printf("\n\t\t ------------------------------------\n");
         availableFlights++; // Increment the count of available flights
     }
 }
 
 if (availableFlights == 0) {
-    printf("Sorry, no flights available for the specified route. Please try again later.\n");
+    printf("\n\t\t Sorry, no flights available for the specified route. Please try again later.\n");
     return;
 }
 
     // Ask the user to select a flight
     int selectedFlight;
     do {
-        printf("Enter the number of the flight you want to book: ");
+        printf("\n\t\t Enter the serial number of the flight you want to book: ");
         scanf("%d", &selectedFlight);
 
         if (selectedFlight < 1 || selectedFlight > numFlights) {
-            printf("Invalid choice. Please enter a valid flight number.\n");
+            printf("\n\t\t Invalid choice. Please enter a valid flight number.\n");
         }
     } while (selectedFlight < 1 || selectedFlight > numFlights);
 
     // Display selected flight details
-    printf("\nSelected Flight Details:\n");
-    printf("Flight Number: %s\n", flights[selectedFlight - 1].flightNumber);
-    printf("Source: %s\n", flights[selectedFlight - 1].source);
-    printf("Destination: %s\n", flights[selectedFlight - 1].destination);
-    printf("Departure Date: %s\n", flights[selectedFlight - 1].departureDate);
-    printf("Departure Time: %s\n", flights[selectedFlight - 1].departureTime);
-    printf("Arrival Date: %s\n", flights[selectedFlight - 1].arrivalDate);
-    printf("Arrival Time: %s\n", flights[selectedFlight - 1].arrivalTime);
-    printf("Ticket Price for Infant: %.2f\n", flights[selectedFlight - 1].ticketPriceInfant);
-    printf("Ticket Price for Child: %.2f\n", flights[selectedFlight - 1].ticketPriceChild);
-    printf("Ticket Price for Adult: %.2f\n", flights[selectedFlight - 1].ticketPriceAdult);
+    printf("\n\t\t Selected Flight Details:\n");
+    printf("\t\t Flight Number: %s\n", flights[selectedFlight - 1].flightNumber);
+    printf("\t\t Source: %s\n", flights[selectedFlight - 1].source);
+    printf("\t\t Destination: %s\n", flights[selectedFlight - 1].destination);
+    printf("\t\t Departure Date: %s\n", flights[selectedFlight - 1].departureDate);
+    printf("\t\t Departure Time: %s\n", flights[selectedFlight - 1].departureTime);
+    printf("\t\t Arrival Date: %s\n", flights[selectedFlight - 1].arrivalDate);
+    printf("\t\t Arrival Time: %s\n", flights[selectedFlight - 1].arrivalTime);
+    printf("\t\t Ticket Price for Infant: %.2f\n", flights[selectedFlight - 1].ticketPriceInfant);
+    printf("\t\t Ticket Price for Child: %.2f\n", flights[selectedFlight - 1].ticketPriceChild);
+    printf("\t\t Ticket Price for Adult: %.2f\n", flights[selectedFlight - 1].ticketPriceAdult);
 
     // Check for seat availability
     if (flights[selectedFlight - 1].seatsAvailable <= 0) {
-        printf("Sorry, no seats available for the selected flight. Please try again later.\n");
+        printf("\n\t\t Sorry, no seats available for the selected flight. Please try again later.\n");
         return;
     }
 
     // Ask the user to select passenger type
     int passengerType;
     do {
-        printf("\nSelect Passenger Type:\n");
-        printf("1. Infant (below 5 years)\n");
-        printf("2. Child (between 6 and 18 years)\n");
-        printf("3. Adult (above 18 years)\n");
-        printf("Enter your choice: ");
+        printf("\n\t\t Select Passenger Type:\n");
+        printf("\n\t\t 1. Infant (below 5 years)\n");
+        printf("\n\t\t 2. Child (between 6 and 18 years)\n");
+        printf("\n\t\t 3. Adult (above 18 years)\n");
+        printf("\n\t\t Enter your choice: ");
         scanf("%d", &passengerType);
 
         if (passengerType < 1 || passengerType > 3) {
-            printf("Invalid choice. Please enter a valid option.\n");
+            printf("\n\t\t Invalid choice. Please enter a valid option.\n");
         }
     } while (passengerType < 1 || passengerType > 3);
 
@@ -256,22 +261,22 @@ if (availableFlights == 0) {
             break;
     }
 
-    printf("Ticket Fare: %.2f Please proceed to payment.\n", ticketFare);
+    printf("\n\t\t Ticket Fare: %.2f\n\n\t\t Please proceed to payment.\n", ticketFare);
 
     // Book the ticket
-    printf("\nPlease wait while we process your request...\n");
+    printf("\n\t\t Please wait while we process your request...\n");
 
-    printf("\nMaking the reservation...\n");
+    printf("\n\t\t Making the reservation...\n");
     usleep(2000000); // Simulate a delay for a more realistic experience
 
-    printf("\nBooking the ticket...\n");
+    printf("\n\t\t Booking the ticket...\n");
     usleep(2000000);  // Simulate a delay for a more realistic experience
 
     // Update seat availability
     flights[selectedFlight - 1].seatsAvailable--;
 
     // Display booking confirmation and details
-    printf("\nTicket booked successfully!\n");
+    printf("\n\t\t Ticket booked successfully!\n");
 
     // Store booking details in an array of structures
     //     struct Booking {
@@ -291,7 +296,7 @@ if (availableFlights == 0) {
 
 // Check if the reallocation was successful
 if (db->bookedTickets == NULL) {
-    printf("Memory allocation failed. Exiting.\n");
+    printf("\n\t\t Memory allocation failed. Exiting.\n");
     exit(EXIT_FAILURE);
 }
 
@@ -299,54 +304,58 @@ if (db->bookedTickets == NULL) {
 db->bookedTickets[db->bookedTicketsCount - 1] = booking;
     //printf("The flight index = "+(db->bookedTickets[db->bookedTicketsCount - 1]).flightIndex);
     // Display booking details
-    printf("\nBooking Details:\n");
-    printf("Passenger Name: %s\n", booking.user.person.name);
+    printf("\n\t\t ___________________________________________ \n");
+    printf("\n\n\t\t Booking Details:\n");
+    printf("\t\t Passenger Name: %s\n", booking.user.person.name);
 
     if (passengerType==1){
-        printf("Passenger Type: I\n");
+        printf("\t\t Passenger Type: I\n");
     }
     else if (passengerType==2){
-        printf("Passenger Type: C\n");
+        printf("\t\t Passenger Type: C\n");
     }
     else {
-        printf("Passenger Type: A\n");
+        printf("\t\t Passenger Type: A\n");
     }
 
-    printf("Flight Number: %s\n", booking.flight.flightNumber);
-    printf("Source: %s\n", booking.flight.source);
-    printf("Destination: %s\n", booking.flight.destination);
-    printf("Departure Date: %s\n", booking.flight.departureDate);
-    printf("Departure Time: %s\n", booking.flight.departureTime);
-    printf("Arrival Date: %s\n", booking.flight.arrivalDate);
-    printf("Arrival Time: %s\n", booking.flight.arrivalTime);
-    printf("Ticket Price: %.2f\n", ticketFare);
+    printf("\n\t\t Flight Number: %s\n", booking.flight.flightNumber);
+    printf("\t\t Source: %s\n", booking.flight.source);
+    printf("\t\t Destination: %s\n", booking.flight.destination);
+    printf("\t\t Departure Date: %s\n", booking.flight.departureDate);
+    printf("\t\t Departure Time: %s\n", booking.flight.departureTime);
+    printf("\t\t Arrival Date: %s\n", booking.flight.arrivalDate);
+    printf("\t\t Arrival Time: %s\n", booking.flight.arrivalTime);
+    printf("\t\t Ticket Price: %.2f\n", ticketFare);
 
     // Ask the user to press any button to return to the main interface
-    printf("Press any key to return to the main interface...\n");
+    printf("\n\t\t Press enter key to return to the main interface...\n");
+    printf("\n\t\t ___________________________________________ \n");
     getchar();  // Consume the newline character from the previous input
     getchar();  // Wait for a key press
 }
 
 void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlights) {
-    printf("\n<-------- View Booked Tickets -------->\n");
+    printf("\n\t\t <-------- View Booked Tickets -------->\n");
 
     int userType;
-    printf("Are you a user or an admin?\n");
-    printf("1. User\n");
-    printf("2. Admin\n");
-    printf("Enter your choice: ");
+    printf("\n\t\t Are you a user or an admin?\n");
+    printf("\t\t 1. User\n");
+    printf("\t\t 2. Admin\n");
+    printf("\t\t Enter your choice: ");
     scanf("%d", &userType);
+    printf("\n\t\t -------------------------------------\n");
 
     if (userType == 1) {
         // User login to view booked tickets
         char inputUsername[20];
         char inputPassword[20];
 
-        printf("Enter your username: ");
+        printf("\t\t Enter your username: ");
         scanf("%s", inputUsername);
 
-        printf("Enter your password: ");
+        printf("\n\t\t Enter your password: ");
         scanf("%s", inputPassword);
+        printf("\n\t\t -------------------------------------\n");
 
         int userIndex = -1;
         for (int i = 0; i < db->count; ++i) {
@@ -358,12 +367,13 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
         }
 
         if (userIndex == -1) {
-            printf("Login failed. Invalid username or password.\n");
+            printf("\n\t\t Login failed. Invalid username or password.\n");
             return;
         }
 
         // Display booked tickets for the logged-in user
-        printf("Booked Tickets for User: %s\n", db->users[userIndex]->person.username);
+        printf("\n\t\t Booked Tickets for User: %s\n", db->users[userIndex]->person.username);
+        printf("\n\t\t -------------------------------------\n");
 
         // Check if the user has booked any tickets
 
@@ -372,30 +382,31 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
     
             if(strcmp((db->bookedTickets[i].user.person.username),inputUsername)!=0) continue;
             cnt++;
-            printf("Booked Ticket Details:\n");
-            printf("Passenger Type: ");
+            printf("\n\t\t Booked Ticket Details:\n");
+            printf("\n\t\t Passenger Type: ");
         switch (db->bookedTickets[i].passengerType) {
             case 1:
-                printf("Infant\n");
+                printf("\n\t\t Infant\n");
                 break;
             case 2:
-                printf("Child\n");
+                printf("\t\t Child\n");
                 break;
             case 3:
-                printf("Adult\n");
+                printf("\t\t Adult\n");
                 break;
             default:
-                printf("Unknown\n");
+                printf("\n\t\t Unknown\n");
         }
-            printf("Flight Number: %s\n", db->bookedTickets[i].flight.flightNumber);
-            printf("Source: %s\n", db->bookedTickets[i].flight.source);
-            printf("Destination: %s\n", db->bookedTickets[i].flight.destination);
-            printf("Departure Date: %s\n", db->bookedTickets[i].flight.departureDate);
-            printf("Departure Time: %s\n", db->bookedTickets[i].flight.departureTime);
-            printf("Arrival Date: %s\n", db->bookedTickets[i].flight.arrivalDate);
-            printf("Arrival Time: %s\n", db->bookedTickets[i].flight.arrivalTime);
+            printf("\n\t\t Flight Number: %s\n", db->bookedTickets[i].flight.flightNumber);
+            printf("\n\t\t Source: %s\n", db->bookedTickets[i].flight.source);
+            printf("\n\t\t Destination: %s\n", db->bookedTickets[i].flight.destination);
+            printf("\n\t\t Departure Date: %s\n", db->bookedTickets[i].flight.departureDate);
+            printf("\n\t\t Departure Time: %s\n", db->bookedTickets[i].flight.departureTime);
+            printf("\n\t\t Arrival Date: %s\n", db->bookedTickets[i].flight.arrivalDate);
+            printf("\n\t\t Arrival Time: %s\n", db->bookedTickets[i].flight.arrivalTime);
+            printf("\n\t\t _______________________________________ \n");
         } if(cnt==0) {
-            printf("No booked tickets found for this user.\n");
+            printf("\n\t\t No booked tickets found for this user.\n");
         }
     } else if (userType == 2) {
         // Admin login to view all booked tickets
@@ -403,14 +414,15 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
         char inputPassword[20];
         char inputEmployeeID[20];
 
-        printf("Enter your username: ");
+        printf("\n\t\t Enter your username: ");
         scanf("%s", inputUsername);
 
-        printf("Enter your password: ");
+        printf("\n\t\t Enter your password: ");
         scanf("%s", inputPassword);
 
-        printf("Enter your employee ID: ");
+        printf("\n\t\t Enter your employee ID: ");
         scanf("%s", inputEmployeeID);
+        printf("\n\t\t _____________________________________________ \n");
 
         int adminIndex = -1;
         for (int i = 0; i < db->count; ++i) {
@@ -423,42 +435,46 @@ void viewBookedTickets(struct Database *db, struct Flight flights[], int numFlig
         }
 
         if (adminIndex == -1) {
-            printf("Login failed. Invalid username, password, or employee ID.\n");
+            printf("\n\t\t Login failed. Invalid username, password, or employee ID.\n");
             return;
         }
 
         // Display all booked tickets for the admin
-        printf("Displaying all booked Tickets for Admin: %s\n", db->admins[adminIndex]->person.username);
+        printf("\n\t\t Displaying all booked Tickets for Admin: %s\n", db->admins[adminIndex]->person.username);
+        printf("\n\t\t _____________________________________________ \n");
 
         for (int i = 0; i < db->count; ++i) {
             if (db->bookedTickets[i].user.person.username != NULL) {
-                printf("User: %s\n", db->bookedTickets[i].user.person.username);
-                printf("Booked Ticket Details:\n");
-                printf("Passenger Type: ");
+                printf("\n\t\t User: %s\n", db->bookedTickets[i].user.person.username);
+                printf("\n\t\t _________________________________________ \n");
+                printf("\n\t\t Booked Ticket Details:\n");
+                printf("\n\t\t _________________________________________ \n");
+                printf("\n\t\t Passenger Type: ");
         switch (db->bookedTickets[i].passengerType) {
             case 1:
-                printf("Infant\n");
+                printf("\t\t Infant\n");
                 break;
             case 2:
-                printf("Child\n");
+                printf("\t\t Child\n");
                 break;
             case 3:
-                printf("Adult\n");
+                printf("\t\t Adult\n");
                 break;
             default:
-                printf("Unknown\n");
+                printf("\t\t Unknown\n");
         }
-                printf("Flight Number: %s\n", db->bookedTickets[i].flight.flightNumber);
-                printf("Source: %s\n", db->bookedTickets[i].flight.source);
-                printf("Destination: %s\n", db->bookedTickets[i].flight.destination);
-                printf("Departure Date: %s\n", db->bookedTickets[i].flight.departureDate);
-                printf("Departure Time: %s\n", db->bookedTickets[i].flight.departureTime);
-                printf("Arrival Date: %s\n", db->bookedTickets[i].flight.arrivalDate);
-                printf("Arrival Time: %s\n", db->bookedTickets[i].flight.arrivalTime);
+                printf("\n\t\t Flight Number: %s\n", db->bookedTickets[i].flight.flightNumber);
+                printf("\n\t\t Source: %s\n", db->bookedTickets[i].flight.source);
+                printf("\n\t\t Destination: %s\n", db->bookedTickets[i].flight.destination);
+                printf("\n\t\t Departure Date: %s\n", db->bookedTickets[i].flight.departureDate);
+                printf("\n\t\t Departure Time: %s\n", db->bookedTickets[i].flight.departureTime);
+                printf("\n\t\t Arrival Date: %s\n", db->bookedTickets[i].flight.arrivalDate);
+                printf("\n\t\t Arrival Time: %s\n", db->bookedTickets[i].flight.arrivalTime);
+                printf("\n\t\t __________________________________________ \n");
             }
         }
     } else {
-        printf("Invalid choice. Please try again.\n");
+        printf("\n\t\t Invalid choice. Please try again.\n");
     }
 }
 
@@ -469,13 +485,13 @@ void adminUtilities(struct Database *db, struct Flight flights[], int *numFlight
         char inputPassword[20];
         char inputEmployeeID[20];
 
-        printf("Enter your username: ");
+        printf("\n\t\t Enter your username: ");
         scanf("%s", inputUsername);
 
-        printf("Enter your password: ");
+        printf("\n\t\t Enter your password: ");
         scanf("%s", inputPassword);
 
-        printf("Enter your employee ID: ");
+        printf("\n\t\t Enter your employee ID: ");
         scanf("%s", inputEmployeeID);
 
         int adminIndex = -1;
@@ -491,13 +507,14 @@ void adminUtilities(struct Database *db, struct Flight flights[], int *numFlight
         if (adminIndex != -1) {
             int adminChoice;
             do {
-                printf("\nAdmin Utilities\n");
-                printf("1. Enter Flight Details\n");
-                printf("2. Edit Flight Details\n");
-                printf("3. View All Flight Details\n");
-                printf("4. Back to Main Menu\n");
-                printf("Enter your choice: ");
+                printf("\n\t\t Admin Utilities\n");
+                printf("\n\t\t 1. Enter Flight Details\n");
+                printf("\n\t\t 2. Edit Flight Details\n");
+                printf("\n\t\t 3. View All Flight Details\n");
+                printf("\n\t\t 4. Back to Main Menu\n");
+                printf("\n\t\t Enter your choice: ");
                 scanf("%d", &adminChoice);
+                printf("\n\t\t ___________________________________________\n");
 
                 switch (adminChoice) {
                     case 1:
@@ -510,33 +527,35 @@ void adminUtilities(struct Database *db, struct Flight flights[], int *numFlight
                         viewAllFlightDetails(flights, *numFlights);
                         break;
                     case 4:
-                        printf("Returning to the main menu.\n");
+                        printf("\n\t\t Returning to the main menu.\n");
+                        printf("\n\t\t _________________________________ \n");
                         break;
                     default:
-                        printf("Invalid choice. Please enter a valid option.\n");
+                        printf("\n\t\t Invalid choice. Please enter a valid option.\n");
                 }
             } while (adminChoice != 4);
         } else {
-            printf("Login failed. Invalid username, password, or employee ID.\n");
+            printf("\n\t\t Login failed. Invalid username, password, or employee ID.\n");
         }
     } else {
-        printf("No admins exist. Admin utilities cannot be accessed.\n");
+        printf("\n\t\t No admins exist. Admin utilities cannot be accessed.\n");
     }
 }
 
 // Function to sign up a new user or admin
 void signUp(struct Database *db) {
     if (db->count == MAX_USERS + MAX_ADMINS) {
-        printf("Database is full. Cannot sign up new users or admins.\n");
+        printf("\n\t\t Database is full. Cannot sign up new users or admins.\n");
         return;
     }
 
     int userType;
-    printf("Choose user type:\n");
-    printf("1. User\n");
-    printf("2. Admin\n");
-    printf("Enter your choice: ");
+    printf("\n\t\t Choose user type:\n");
+    printf("\n\t\t 1. User\n");
+    printf("\t\t 2. Admin\n");
+    printf("\n\t\t Enter your choice: ");
     scanf("%d", &userType);
+    printf("\t\t -------------------------------------------\n");
 
     if (userType != 1 && userType != 2) {
         printf("Invalid choice. Please try again.\n");
@@ -546,7 +565,7 @@ void signUp(struct Database *db) {
     char inputUsername[20];
     char inputPassword[20];
 
-    printf("Enter your desired username: ");
+    printf("\n\t\t Enter your desired username: ");
     scanf(" %19[^\n]", inputUsername);
 
     // Check if the username already exists
@@ -558,7 +577,7 @@ void signUp(struct Database *db) {
         }
     }
 
-    printf("Enter your desired password: ");
+    printf("\n\t\t Enter your desired password: ");
     scanf(" %19[^\n]", inputPassword);
 
     // Check if the password already exists
@@ -573,19 +592,19 @@ void signUp(struct Database *db) {
     if (userType == 1 && db->count < MAX_USERS) {
         struct User *newUser = (struct User *)malloc(sizeof(struct User));
         if (!newUser) {
-            printf("Memory allocation error.\n");
+            printf("\n\t\t Memory allocation error.\n");
             exit(EXIT_FAILURE);
         }
 
-        printf("Enter your name: ");
+        printf("\n\t\t Enter your name: ");
         newUser->person.name = (char *)malloc(50 * sizeof(char));
         scanf(" %49[^\n]", newUser->person.name);
 
-        printf("Enter your phone number: ");
+        printf("\n\t\t Enter your phone number: ");
         newUser->person.phone = (char *)malloc(15 * sizeof(char));
         scanf(" %14[^\n]", newUser->person.phone);
 
-        printf("Enter your email: ");
+        printf("\n\t\t Enter your email: ");
         newUser->person.email = (char *)malloc(50 * sizeof(char));
         scanf(" %49[^\n]", newUser->person.email);
 
@@ -594,38 +613,42 @@ void signUp(struct Database *db) {
 
         db->users[db->count++] = newUser;
 
-        printf("Sign up successful!\n\n");
+        printf("\n\t\t ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+        printf("\n\t\t Sign up successful!\n\n");
+        printf("\t\t ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n");
     } else if (userType == 2 && db->count < MAX_ADMINS) {
         struct Admin *newAdmin = (struct Admin *)malloc(sizeof(struct Admin));
         if (!newAdmin) {
-            printf("Memory allocation error.\n");
+            printf("\n\t\t Memory allocation error.\n");
             exit(EXIT_FAILURE);
         }
 
-        printf("Enter your name: ");
+        printf("\n\t\t Enter your name: ");
         newAdmin->person.name = (char *)malloc(50 * sizeof(char));
         scanf(" %49[^\n]", newAdmin->person.name);
 
-        printf("Enter your phone number: ");
+        printf("\n\t\t Enter your phone number: ");
         newAdmin->person.phone = (char *)malloc(15 * sizeof(char));
         scanf(" %14[^\n]", newAdmin->person.phone);
 
-        printf("Enter your email: ");
+        printf("\n\t\t Enter your email: ");
         newAdmin->person.email = (char *)malloc(50 * sizeof(char));
         scanf(" %49[^\n]", newAdmin->person.email);
 
         newAdmin->person.username = strdup(inputUsername);
         newAdmin->person.password = strdup(inputPassword);
 
-        printf("Enter your unique employee ID: ");
+        printf("\n\t\t Enter your unique employee ID: ");
         newAdmin->employeeID = (char *)malloc(20 * sizeof(char));
         scanf(" %19[^\n]", newAdmin->employeeID);
 
         db->admins[db->count++] = newAdmin;
 
-        printf("Admin signup successful!\n\n");
+        printf("\n\t\t ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
+        printf("\n\t\t Admin signup successful!\n\n");
+        printf("\t\t ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n");
     } else {
-        printf("Database is full. Cannot sign up new users or admins.\n");
+        printf("\n\t\t Database is full. Cannot sign up new users or admins.\n");
     }
 }
 
@@ -633,126 +656,131 @@ void signUp(struct Database *db) {
 // Function to enter flight details
 void enterFlightDetails(struct Flight flights[], int *numFlights) {
     if (*numFlights == MAX_FLIGHTS) {
-        printf("Maximum number of flights reached. Cannot add more flights.\n");
+        printf("\n\t\t Maximum number of flights reached. Cannot add more flights.\n");
         return;
     }
 
-    printf("Enter Flight Details:\n");
-    printf("Flight Number: ");
+    printf("\n\t\t Enter Flight Details:\n");
+    printf("\n\t\t __________________________________________ \n");
+    printf("\n\t\t Flight Number: ");
     scanf("%s", flights[*numFlights].flightNumber);
 
     // Check if the flight number already exists
     for (int i = 0; i < *numFlights; i++) {
         if (strcmp(flights[i].flightNumber, flights[*numFlights].flightNumber) == 0) {
-            printf("Flight with the given number already exists. Cannot add duplicate flights.\n");
+            printf("\n\t\t Flight with the given number already exists. Cannot add duplicate flights.\n");
             return;
         }
     }
 
-    printf("Departure Time: ");
+    printf("\n\t\t Departure Time: ");
     scanf("%s", flights[*numFlights].departureTime);
-    printf("Arrival Time: ");
+    printf("\n\t\t Arrival Time: ");
     scanf("%s", flights[*numFlights].arrivalTime);
 
     // Input for departure and arrival dates
-    printf("Departure Date: ");
+    printf("\n\t\t Departure Date: ");
     scanf("%s", flights[*numFlights].departureDate);
-    printf("Arrival Date: ");
+    printf("\n\t\t Arrival Date: ");
     scanf("%s", flights[*numFlights].arrivalDate);
 
-    printf("Ticket Price for Infant: ");
+    printf("\n\t\t Ticket Price for Infant: ");
     scanf("%f", &flights[*numFlights].ticketPriceInfant);
-    printf("Ticket Price for Child: ");
+    printf("\n\t\t Ticket Price for Child: ");
     scanf("%f", &flights[*numFlights].ticketPriceChild);
-    printf("Ticket Price for Adult: ");
+    printf("\n\t\t Ticket Price for Adult: ");
     scanf("%f", &flights[*numFlights].ticketPriceAdult);
-    printf("Source: ");
+    printf("\n\t\t Source: ");
     scanf("%s", flights[*numFlights].source);
-    printf("Destination: ");
+    printf("\n\t\t Destination: ");
     scanf("%s", flights[*numFlights].destination);
 
     // Input validation for seats available
     do {
-        printf("Number of Seats Available: ");
+        printf("\n\t\t Number of Seats Available: ");
         scanf("%d", &flights[*numFlights].seatsAvailable);
         if (flights[*numFlights].seatsAvailable < 0) {
-            printf("Please enter a non-negative number of seats.\n");
+            printf("\n\t\t Please enter a non-negative number of seats.\n");
         }
     } while (flights[*numFlights].seatsAvailable < 0);
 
-    printf("Flight Details added successfully.\n");
+    printf("\n\t\t Flight Details added successfully.\n");
+    printf("\n\t\t _____________________________________________________\n");
     (*numFlights)++;
 }
 
 // Function to edit flight details
 void editFlightDetails(struct Flight flights[], int numFlights) {
     char editFlightNumber[10];
-    printf("Enter the Flight Number to edit details: ");
+    printf("\n\t\t Enter the Flight Number to edit details: ");
     scanf("%s", editFlightNumber);
 
     for (int i = 0; i < numFlights; i++) {
         if (strcmp(flights[i].flightNumber, editFlightNumber) == 0) {
-            printf("Flight Details found. Enter new details:\n");
-            printf("Departure Time: ");
+            printf("\n\t\t Flight Details found. Enter new details:\n");
+            printf("\n\t\t Departure Time: ");
             scanf("%s", flights[i].departureTime);
-            printf("Arrival Time: ");
+            printf("\n\t\t Arrival Time: ");
             scanf("%s", flights[i].arrivalTime);
 
             // Input for departure and arrival dates
-            printf("Departure Date: ");
+            printf("\n\t\t Departure Date: ");
             scanf("%s", flights[i].departureDate);
-            printf("Arrival Date: ");
+            printf("\n\t\t Arrival Date: ");
             scanf("%s", flights[i].arrivalDate);
 
-            printf("Ticket Price for Infant: ");
+            printf("\n\t\t Ticket Price for Infant: ");
             scanf("%f", &flights[i].ticketPriceInfant);
-            printf("Ticket Price for Child: ");
+            printf("\n\t\t Ticket Price for Child: ");
             scanf("%f", &flights[i].ticketPriceChild);
-            printf("Ticket Price for Adult: ");
+            printf("\n\t\t Ticket Price for Adult: ");
             scanf("%f", &flights[i].ticketPriceAdult);
-            printf("Source: ");
+            printf("\n\t\t Source: ");
             scanf("%s", flights[i].source);
-            printf("Destination: ");
+            printf("\n\t\t Destination: ");
             scanf("%s", flights[i].destination);
 
             // Input validation for seats available during editing
             do {
-                printf("Number of Seats Available: ");
+                printf("\n\t\t Number of Seats Available: ");
                 scanf("%d", &flights[i].seatsAvailable);
                 if (flights[i].seatsAvailable < 0) {
-                    printf("Please enter a non-negative number of seats.\n");
+                    printf("\n\t\t Please enter a non-negative number of seats.\n");
                 }
             } while (flights[i].seatsAvailable < 0);
 
-            printf("Flight Details updated successfully.\n");
+            printf("\n\t\t Flight Details updated successfully.\n");
+            printf("\n\t\t ____________________________________ \n");
             return;
         }
     }
 
-    printf("Flight with the given number not found.\n");
+    printf("\n\t\t Flight with the given number not found.\n");
+    printf("\n\t\t ________________________________________\n");
 }
 
 // Function for viewing all flight details
 void viewAllFlightDetails(struct Flight flights[], int numFlights) {
     if (numFlights == 0) {
-        printf("No flights available.\n");
+        printf("\n\t\t No flights available.\n");
         return;
     }
 
-    printf("Flight Details:\n");
+    printf("\n\t\t Flight Details:\n");
+    printf("\n\t\t ______________________________ \n");
     for (int i = 0; i < numFlights; i++) {
-        printf("Flight Number: %s\n", flights[i].flightNumber);
-        printf("Departure Date: %s\n", flights[i].departureDate);
-        printf("Arrival Date: %s\n", flights[i].arrivalDate);
-        printf("Departure Time: %s\n", flights[i].departureTime);
-        printf("Arrival Time: %s\n", flights[i].arrivalTime);
-        printf("Ticket Price for Infant: %.2f\n", flights[i].ticketPriceInfant);
-        printf("Ticket Price for Child: %.2f\n", flights[i].ticketPriceChild);
-        printf("Ticket Price for Adult: %.2f\n", flights[i].ticketPriceAdult);
-        printf("Source: %s\n", flights[i].source);
-        printf("Destination: %s\n", flights[i].destination);
-        printf("Seats Available: %d\n", flights[i].seatsAvailable);
-        printf("-------------------------------\n");
+        printf("\n\t\t Flight Number: %s\n", flights[i].flightNumber);
+        printf("\n\t\t Departure Date: %s\n", flights[i].departureDate);
+        printf("\n\t\t Arrival Date: %s\n", flights[i].arrivalDate);
+        printf("\n\t\t Departure Time: %s\n", flights[i].departureTime);
+        printf("\n\t\t Arrival Time: %s\n", flights[i].arrivalTime);
+        printf("\n\t\t Ticket Price for Infant: %.2f\n", flights[i].ticketPriceInfant);
+        printf("\n\t\t Ticket Price for Child: %.2f\n", flights[i].ticketPriceChild);
+        printf("\n\t\t Ticket Price for Adult: %.2f\n", flights[i].ticketPriceAdult);
+        printf("\n\t\t Source: %s\n", flights[i].source);
+        printf("\n\t\t Destination: %s\n", flights[i].destination);
+        printf("\n\t\t Seats Available: %d\n", flights[i].seatsAvailable);
+        printf("\n\t\t -------------------------------\n");
     }
 }
 
@@ -861,15 +889,15 @@ void freeDatabase(struct Database *db) {
 
 // Function to display details
 void displayDetails(const struct Person *person) {
-    printf("\nDetails:\n");
-    printf("Name: %s\n", person->name);
-    printf("Phone: %s\n", person->phone);
-    printf("Email: %s\n", person->email);
-    printf("Username: %s\n", person->username);
+    printf("\n\t\t Details:\n");
+    printf("\n\t\t Name: %s\n", person->name);
+    printf("\n\t\t Phone: %s\n", person->phone);
+    printf("\n\t\t Email: %s\n", person->email);
+    printf("\n\t\t Username: %s\n", person->username);
 
     // Simulate a delay for a more realistic experience
     usleep(2000000);
 
-    printf("\nRedirecting to main menu...\n");
+    printf("\n\t\t Redirecting to main menu...\n");
 }
 
